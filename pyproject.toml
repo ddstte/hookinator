@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "hookinator"
+version = "0.1.0"
+description = ""
+authors = ["Yaroslav <nedel@gmx.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.0"
+black = {version = "^18.3-alpha.0",allows-prereleases = true}
+isort = "^4.3"
+flake8 = "^3.7"
+
+[tool.isort]
+line_length=120
+multi_line_output=3
+
+[tool.black]
+line-length = 120
+target-version = ["py36"]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
