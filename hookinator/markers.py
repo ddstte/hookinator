@@ -2,7 +2,7 @@ from functools import wraps
 from typing import Any, Callable
 
 from .constants import HOOK_MARKERS
-from .helpers import hook_markers_getter
+from .helpers import bind_hooks, hook_markers_getter
 from .wrappers import MethodWrapper
 
 
@@ -34,6 +34,11 @@ class HookMarker:
         wrapped_method = self.set_wrapper(cls)
         add = wrapped_method.add_pre if self.pre else wrapped_method.add_post
         add(hooked_method)
+
+    def bind(self, method: Callable, cls: Any) -> None:
+        setattr(cls, method.__name__, method)
+        self(method)
+        bind_hooks(cls)
 
     def set_wrapper(self, cls: Any) -> MethodWrapper:
         method = getattr(cls, self.wrapped_method_name)
