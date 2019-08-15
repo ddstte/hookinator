@@ -2,14 +2,10 @@ from hookinator import MethodWrapper
 from tests.fixtures import HookedSaver
 
 
-def test_wrapped_method():
+def test_wrapped_method(check_wrapped_method):
     noop_hooked_saver = HookedSaver()
 
-    assert isinstance(noop_hooked_saver.save, MethodWrapper)
-    assert hasattr(noop_hooked_saver.save, "__wrapped__")
-
-    assert not isinstance(noop_hooked_saver.save.__wrapped__, MethodWrapper)
-    assert noop_hooked_saver.save.__wrapped__.__name__ == noop_hooked_saver.save.__name__
+    check_wrapped_method(noop_hooked_saver.save, MethodWrapper)
 
 
 def test_wrapped_method_return_response():
