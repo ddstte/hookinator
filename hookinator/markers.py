@@ -35,7 +35,7 @@ class HookMarker:
         add = wrapped_method.add_pre if self.pre else wrapped_method.add_post
         add(hooked_method)
 
-    def bind(self, method: Callable, cls: Any) -> None:
+    def bind(self, cls: Any, method: Callable) -> None:
         setattr(cls, method.__name__, method)
         self(method)
         bind_hooks(cls)

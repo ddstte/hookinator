@@ -7,8 +7,8 @@ def test_bind_hook(saver_class, pre_save, post_save, patched_hook_method_maker, 
 
     patched_hook_method = patched_hook_method_maker(test_args, test_kwargs)
 
-    pre_save.bind(patched_hook_method, saver_class)
-    post_save.bind(patched_hook_method, saver_class)
+    pre_save.bind(saver_class, patched_hook_method)
+    post_save.bind(saver_class, patched_hook_method)
 
     noop_hooked_saver = saver_class()
 

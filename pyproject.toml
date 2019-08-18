@@ -2,8 +2,11 @@
 name = "hookinator"
 version = "0.1.0"
 description = ""
-authors = ["Yaroslav <nedel@gmx.com>"]
 license = "MIT"
+authors = ["Yaroslav Bibaev <yaroslav@gmx.com>"]
+readme = 'README.md'
+repository = "https://github.com/ddstte/hookinator"
+homepage = "https://github.com/ddstte/hookinator"
 
 [tool.poetry.dependencies]
 python = "^3.6"
