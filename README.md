@@ -41,3 +41,13 @@ post_init.bind(BaseUser, _validate_first_name)
 user = BaseUser(first_name="First", last_name="Last")
 assert user.first_name == "first"
 ```
+
+```python
+
+
+class X:
+    @hook("__init__", pre=True, post=True)
+    def foo(self):
+        pass
+
+```

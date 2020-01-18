@@ -3,8 +3,8 @@ from typing import Any, Callable, Optional
 
 class MethodWrapper:
     def __init__(self, method: Callable) -> None:
-        self.pre_hooks = set()
-        self.post_hooks = set()
+        self.pre_hooks = []
+        self.post_hooks = []
 
         self.method: Callable = method
         self.instance: Optional[Any] = None
@@ -14,10 +14,10 @@ class MethodWrapper:
         return self
 
     def add_pre(self, hooked_method: str) -> None:
-        self.pre_hooks.add(hooked_method)
+        self.pre_hooks.append(hooked_method)
 
     def add_post(self, hooked_method: str) -> None:
-        self.post_hooks.add(hooked_method)
+        self.post_hooks.append(hooked_method)
 
     def __call__(self, *args, **kwargs) -> Any:
         self.run_pre_hooks(args, kwargs)

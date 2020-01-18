@@ -1,8 +1,8 @@
-from functools import wraps
-from typing import Any, Callable
+from functools import partial, wraps
+from typing import Any, Callable, NoReturn
 
 from .constants import HOOK_MARKERS
-from .helpers import bind_hooks, hook_markers_getter
+from .helpers import bind_hooks, hook_markers_getter, hookable
 from .wrappers import MethodWrapper
 
 
@@ -57,3 +57,39 @@ class PreHookMarker(HookMarker):
 
 class PostHookMarker(HookMarker):
     pre = False
+
+
+class hook:
+    def __init__(self, method: str, *, pre: bool = False, post: bool = False, wrapper=MethodWrapper) -> NoReturn:
+        self.method = method
+        self.pre = pre
+        self.post = post
+        self.method_wrapper_class = wrapper
+
+    def __call__(self, function: Callable) -> Callable:
+        vars(function).setdefault(HOOK_MARKERS, [])
+        hook_markers_getter(function).append(self)
+        function.bind = partial(self.bind, function)
+        return function
+
+    def contribute_to_class(self, cls: Any, method: str) -> None:
+        wrapped_method = self.set_wrapper(cls)
+
+        if self.pre:
+            wrapped_method.add_pre(method)
+        if self.post:
+            wrapped_method.add_post(method)
+
+    def set_wrapper(self, cls: Any) -> MethodWrapper:
+        method = getattr(cls, self.method)
+        if type(method) is self.method_wrapper_class:
+            return method
+
+        wrapped_method = self.method_wrapper_class(method)
+        wraps(method)(wrapped_method)
+        setattr(cls, self.method, wrapped_method)
+        return wrapped_method
+
+    def bind(self, method: Callable, cls: Any) -> None:
+        setattr(cls, method.__name__, method)
+        hookable(cls)
