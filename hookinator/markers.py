@@ -3,7 +3,7 @@ from typing import Any, Callable, NoReturn
 
 from .constants import HOOK_MARKERS
 from .helpers import bind_hooks, hook_markers_getter, hookable
-from .wrappers import MethodWrapper
+from .wrappers import MethodWrapper, Wrapper
 
 
 class HookMarker:
@@ -60,7 +60,7 @@ class PostHookMarker(HookMarker):
 
 
 class hook:
-    def __init__(self, method: str, *, pre: bool = False, post: bool = False, wrapper=MethodWrapper) -> NoReturn:
+    def __init__(self, method: str, *, pre: bool = False, post: bool = False, wrapper: Wrapper = Wrapper) -> NoReturn:
         self.method = method
         self.pre = pre
         self.post = post

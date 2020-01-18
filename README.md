@@ -43,11 +43,14 @@ assert user.first_name == "first"
 ```
 
 ```python
+from hookinator.helpers import hookable
+from hookinator.markers import hook
 
 
+@hookable
 class X:
-    @hook("__init__", pre=True, post=True)
-    def foo(self):
+    @hook(method="__init__", pre=True, post=True)
+    def foo(self, context: dict):
         pass
 
 ```

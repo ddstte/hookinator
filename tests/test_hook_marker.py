@@ -8,7 +8,7 @@ def test_hook_pre_and_post():
     @hookable
     class MyClass:
         @hook(method="__init__", pre=True, post=True)
-        def _(self, args, kwargs):
+        def _(self, context):
             nonlocal call
             call += 1
 
@@ -23,7 +23,7 @@ def test_hook():
     @hookable
     class MyClass:
         @hook(method="__init__", pre=False, post=False)
-        def _(self, args, kwargs):
+        def _(self, context):
             nonlocal call
             call += 1
 
@@ -39,7 +39,7 @@ def test_hook_pre_and_post_duble():
     class MyClass:
         @hook(method="__init__", pre=True, post=True)
         @hook(method="__init__", pre=True, post=True)
-        def _(self, args, kwargs):
+        def _(self, context):
             nonlocal call
             call += 1
 
@@ -52,7 +52,7 @@ def test_hook_pre_and_post_bind_to_cls():
     call = 0
 
     @hook(method="__init__", pre=True, post=True)
-    def my_test_hook(self, args, kwargs):
+    def my_test_hook(self, context):
         nonlocal call
         call += 1
 
