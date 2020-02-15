@@ -5,11 +5,7 @@
 
 ## Examples
 ```python
-from hookinator import PostHookMarker, HookinatorMixin
-
-# make hook marker
-post_init = PostHookMarker("__init__")
-
+from hookinator import hookable, hook
 
 
 class BaseUser:
@@ -18,13 +14,15 @@ class BaseUser:
         self.last_name = last_name
     ...
 
-# add HookinatorMixin to User-class 
-class User(HookinatorMixin, BaseUser):
+# with in-class declaration
+
+@hookable
+class User(BaseUser):
     full_name: str
     
-    # create post_init hook
-    @post_init
-    def set_full_name(self, args, kwargs):
+    # create post __init__ hook
+    @hook(method="__init__", post=True)
+    def set_full_name(self, context):
         self.full_name = f'{self.first_name} {self.last_name}'
 
 
@@ -32,12 +30,42 @@ user = User(first_name="First", last_name="Last")
 assert user.full_name == "First Last"
 
 
-# without inheritance
-def _validate_first_name(self, args, kwargs):
+# or ex-class declaration
+
+@hook(method="__init__", post=True)
+def post_init_hook(self, context):
+    pass
+
+@hook(method="__init__", post=True)
+def validate_first_name(context):
     self.first_name = self.first_name.lower()
 
-post_init.bind(BaseUser, _validate_first_name)
+post_inti_hook.bind(BaseUser)
 
 user = BaseUser(first_name="First", last_name="Last")
 assert user.first_name == "first"
+```
+
+```python
+from hookinator.helpers import hookable
+from hookinator.markers import hook
+
+
+# with in-class declaration
+@hookable
+class X:
+    @hook(method="__init__", pre=True, post=True)
+    def foo(self, contex):
+        pass
+
+# or ex-class declaration
+class Y:
+    pass
+
+@hook(method="__init__", post=True)
+def post_init_hook(self, context):
+    pass
+
+post_inti_hook.bind(Y)
+
 ```

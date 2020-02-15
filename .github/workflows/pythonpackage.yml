@@ -9,7 +9,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6, 3.7]
+        python-version: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@master
@@ -24,6 +24,5 @@ jobs:
         poetry install
     - name: Test with pytest
       run: |
-        poetry run black --check .
         poetry run flake8
         poetry run pytest

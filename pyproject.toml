@@ -17,6 +17,7 @@ isort = "^4.3"
 flake8 = "^3.7"
 flake8-isort = "^2.7"
 black = "^19.10b0"
+flake8-black = "^0.1.1"
 
 [tool.black]
 line-length = 120
