@@ -64,3 +64,43 @@ def test_hook_pre_and_post_bind_to_cls():
     MyClass()
 
     assert call == 2
+
+
+def test_hook_property():
+    call = 0
+    property_call = 0
+
+    @hookable
+    class MyClass:
+        @property
+        def my_property(self):
+            nonlocal property_call
+            property_call += 1
+            return "test"
+
+        @hook(method="my_property", pre=True, post=True)
+        def my_test_hook(self, context):
+            nonlocal call
+            call += 1
+
+    instance = MyClass()
+
+    assert instance.my_property == "test"
+    assert call == 2
+    assert property_call == 1
+
+
+def test_hook_cls_attribute():
+    call = 0
+
+    @hookable
+    class MyClass:
+        attribute = "test"
+
+        @hook(method="attribute", pre=True, post=True)
+        def my_test_hook(self, context):
+            nonlocal call
+            call += 1
+
+    assert MyClass().attribute == "test"
+    assert call == 2
