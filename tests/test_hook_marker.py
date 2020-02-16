@@ -15,7 +15,7 @@ def test_hook_pre_and_post():
             nonlocal call
             call += 1
 
-    assert MyClass().mehtod() == "test"
+    assert MyClass().method() == "test"
     assert call == 2
 
 
