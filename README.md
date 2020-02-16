@@ -45,27 +45,3 @@ post_inti_hook.bind(BaseUser)
 user = BaseUser(first_name="First", last_name="Last")
 assert user.first_name == "first"
 ```
-
-```python
-from hookinator.helpers import hookable
-from hookinator.markers import hook
-
-
-# with in-class declaration
-@hookable
-class X:
-    @hook(method="__init__", pre=True, post=True)
-    def foo(self, contex):
-        pass
-
-# or ex-class declaration
-class Y:
-    pass
-
-@hook(method="__init__", post=True)
-def post_init_hook(self, context):
-    pass
-
-post_inti_hook.bind(Y)
-
-```
