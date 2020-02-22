@@ -110,3 +110,46 @@ def test_hook_pre_and_post_bind_to_cls():
 
     assert MyClass().method() == "test"
     assert call == 2
+
+
+def test_data_descriptor():
+    call = 0
+
+    @hookable
+    class MyClass:
+        def __init__(self):
+            self._value = None
+
+        @property
+        def my_property(self):
+            return self._value
+
+        @my_property.setter
+        def my_property(self, value):
+            self._value = value
+
+        @my_property.deleter
+        def my_property(self):
+            self._value = None
+
+        @hook(method="my_property", pre=True)
+        def my_hook(self, context):
+            nonlocal call
+            call += 1
+
+    instance = MyClass()
+
+    assert instance.my_property is None
+    assert call == 1
+
+    instance.my_property = 1
+    assert call == 2
+
+    assert instance.my_property == 1
+    assert call == 3
+
+    del instance.my_property
+    assert call == 4
+
+    assert instance.my_property is None
+    assert call == 5

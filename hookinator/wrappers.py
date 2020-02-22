@@ -20,8 +20,8 @@ class p:
     def __set__(self, instance, value):
         return self.func.__set__(instance, value)
 
-    def __del__(self, instance):
-        return self.func.__del__(instance)
+    def __delete__(self, instance):
+        return self.func.__delete__(instance)
 
 
 class Wrapper:
@@ -72,6 +72,7 @@ class Wrapper:
 class PropertyWrapper(Wrapper):
     def __init__(self, method):
         if hasattr(method, "__get__"):
+            self._method = method
             callable_method = method.__get__
         else:
             callable_method = lambda *_, **__: method  # noqa
@@ -79,3 +80,13 @@ class PropertyWrapper(Wrapper):
 
     def contribute_to_class(self, cls, method):
         setattr(cls, method, p(self))
+
+    def __set__(self, instance, value):
+        self.run_pre_hooks(context=Context(args=(), kwargs={}, pre=True))
+        self._method.__set__(self.instance, value)
+        self.run_post_hooks(context=Context(args=(), kwargs={}, post=True, result=None))
+
+    def __delete__(self, instance):
+        self.run_pre_hooks(context=Context(args=(), kwargs={}, pre=True))
+        self._method.__delete__(self.instance)
+        self.run_post_hooks(context=Context(args=(), kwargs={}, post=True, result=None))
