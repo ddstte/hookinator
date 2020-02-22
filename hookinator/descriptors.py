@@ -18,4 +18,5 @@ class non_data_descriptor:
         self.prop = prop
 
     def __get__(self, obj, type=None):
+        self.prop.instance = obj
         return self.prop(obj)
