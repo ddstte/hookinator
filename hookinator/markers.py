@@ -3,12 +3,16 @@ from typing import Any, Callable
 
 from .constants import HOOK_MARKERS
 from .helpers import hook_markers_getter, hookable
-from .wrappers import PropertyWrapper, Wrapper
+from .wrappers import AttrWrapper, PropertyWrapper, Wrapper
 
 
 def wrapper_builder(method) -> Wrapper:
     if callable(method):
         return Wrapper
+
+    if not hasattr(method, "__get__"):
+        return AttrWrapper
+
     return PropertyWrapper
 
 

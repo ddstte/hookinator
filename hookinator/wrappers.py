@@ -1,5 +1,7 @@
 from typing import Any, Callable, NamedTuple, Optional
 
+from .descriptors import data_descriptor, non_data_descriptor
+
 
 class Context(NamedTuple):
     args: tuple
@@ -7,21 +9,6 @@ class Context(NamedTuple):
     pre: bool = False
     post: bool = False
     result: Optional[Any] = None
-
-
-class p:
-    def __init__(self, func):
-        self.func = func
-
-    def __get__(self, instance, owner=None):
-        self.func.instance = instance
-        return self.func(instance)
-
-    def __set__(self, instance, value):
-        return self.func.__set__(instance, value)
-
-    def __delete__(self, instance):
-        return self.func.__delete__(instance)
 
 
 class Wrapper:
@@ -69,17 +56,21 @@ class Wrapper:
         setattr(cls, method, self)
 
 
-class PropertyWrapper(Wrapper):
+class AttrWrapper(Wrapper):
     def __init__(self, method):
-        if hasattr(method, "__get__"):
-            self._method = method
-            callable_method = method.__get__
-        else:
-            callable_method = lambda *_, **__: method  # noqa
-        super().__init__(callable_method)
+        super().__init__(lambda *_, **__: method)
 
     def contribute_to_class(self, cls, method):
-        setattr(cls, method, p(self))
+        setattr(cls, method, non_data_descriptor(self))
+
+
+class PropertyWrapper(Wrapper):
+    def __init__(self, method):
+        self._method = method
+        super().__init__(method.__get__)
+
+    def contribute_to_class(self, cls, method):
+        setattr(cls, method, data_descriptor(self))
 
     def __set__(self, instance, value):
         self.run_pre_hooks(context=Context(args=(), kwargs={}, pre=True))
